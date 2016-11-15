@@ -34,17 +34,6 @@ public class CuacaRVAdapter extends RecyclerView.Adapter<CuacaRVAdapter.ViewHold
     }
     public void updateList(java.util.List<List> list){
         this.lists = list;
-
-        Time dayTime = new Time();
-        dayTime.setToNow();
-
-        // we start at the day returned by local time. Otherwise this is a mess.
-        // we start at the day returned by local time. Otherwise this is a mess.
-        int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
-
-        // now we work exclusively in UTC
-        dayTime = new Time();
-        dayTime.setJulianDay(julianStartDay);
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -89,7 +78,6 @@ public class CuacaRVAdapter extends RecyclerView.Adapter<CuacaRVAdapter.ViewHold
             return lists.size();
         }
         return 0;
-//        return 10;
     }
 
     @Override
