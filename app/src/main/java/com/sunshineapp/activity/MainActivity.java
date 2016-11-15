@@ -1,9 +1,7 @@
 package com.sunshineapp.activity;
 
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -17,7 +15,6 @@ import com.sunshineapp.adapter.CuacaRVAdapter;
 import com.sunshineapp.data.CuacaDBHelper;
 import com.sunshineapp.model.SunshineURL;
 import com.sunshineapp.pojo.CuacaRamalan;
-import com.sunshineapp.pojo.List;
 import com.sunshineapp.singleton.GsonSingleton;
 
 import java.io.BufferedReader;
@@ -31,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     CuacaRVAdapter mCuacaAdapter;
 
-    class AmbilCuacaSekarangTask extends AsyncTask<Void, Void, CuacaRamalan> {
-        public AmbilCuacaSekarangTask(){
+    class AmbilCuacaRamalanTask extends AsyncTask<Void, Void, CuacaRamalan> {
+        public AmbilCuacaRamalanTask(){
 
         }
 
@@ -114,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         mCuacaAdapter = new CuacaRVAdapter(null);
         mRecyclerView.setAdapter(mCuacaAdapter);
 
-        new AmbilCuacaSekarangTask().execute();
+        new AmbilCuacaRamalanTask().execute();
 
         // TODO Remove, for test
         CuacaDBHelper cuacaDBHelper = new CuacaDBHelper(MainActivity.this);
