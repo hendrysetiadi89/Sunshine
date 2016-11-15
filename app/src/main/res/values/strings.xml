@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">SunShineApp</string>
     <string name="action_settings">Settings</string>
+    <string name="sunshine">SunShine</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="xx_percent">%1.0f\u00B0</string>
+
+    <string name="content_authority">com.sunshineapp</string>
 </resources>
