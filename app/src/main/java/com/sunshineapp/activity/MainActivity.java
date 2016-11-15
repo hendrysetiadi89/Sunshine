@@ -1,6 +1,9 @@
 package com.sunshineapp.activity;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -27,10 +30,69 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final int RAMALAN_LOADER = 100;
     RecyclerView mRecyclerView;
     CuacaRVAdapter mCuacaAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        LinearLayoutManager llm = new LinearLayoutManager(MainActivity.this,
+                LinearLayoutManager.VERTICAL,false);
+
+        mRecyclerView.setLayoutManager(llm);
+        mCuacaAdapter = new CuacaRVAdapter(null);
+        mRecyclerView.setAdapter(mCuacaAdapter);
+
+        getLoaderManager().initLoader(RAMALAN_LOADER,null, this);
+
+        new AmbilCuacaSekarangTask().execute();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        if (i == RAMALAN_LOADER) {
+            return new CursorLoader(
+                    MainActivity.this,
+                    Uri.parse("content://com.sunshineapp/ramalan"),
+                    new String[]{
+                            CuacaDBHelper.COLUMN_DT,
+                            CuacaDBHelper.COLUMN_MINTEMP,
+                            CuacaDBHelper.COLUMN_MAXTEMP,
+                            CuacaDBHelper.COLUMN_W_DESC,
+                            CuacaDBHelper.COLUMN_W_ICON
+                    },
+                    "ramalan.city_id = ?",
+                    new String[] {"1642911"},
+                    null
+            );
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        mCuacaAdapter.updateList(cursor);
+        mCuacaAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mCuacaAdapter.updateList(null);
+    }
+
 
     class AmbilCuacaSekarangTask extends AsyncTask<Void, Void, CuacaRamalan> {
         public AmbilCuacaSekarangTask(){
@@ -112,36 +174,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        @Override
-        protected void onPostExecute(CuacaRamalan c) {
-            super.onPostExecute(c);
-            // mCuacaAdapter = new CuacaRVAdapter(c.getList());
-            mCuacaAdapter.updateList(c.getList());
-            mCuacaAdapter.notifyDataSetChanged();
-//            Toast.makeText(MainActivity.this,s, Toast.LENGTH_LONG).show();
-        }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        LinearLayoutManager llm = new LinearLayoutManager(MainActivity.this,
-                LinearLayoutManager.VERTICAL,false);
-
-        mRecyclerView.setLayoutManager(llm);
-        mCuacaAdapter = new CuacaRVAdapter(null);
-        mRecyclerView.setAdapter(mCuacaAdapter);
-
-        new AmbilCuacaSekarangTask().execute();
-    }
 
 }
