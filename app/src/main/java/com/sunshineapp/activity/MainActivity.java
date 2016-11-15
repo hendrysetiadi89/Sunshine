@@ -23,6 +23,7 @@ import com.sunshineapp.model.SunshineURL;
 import com.sunshineapp.pojo.CuacaRamalan;
 import com.sunshineapp.pojo.List;
 import com.sunshineapp.pojo.Weather;
+import com.sunshineapp.service.SunshineService;
 import com.sunshineapp.singleton.GsonSingleton;
 
 import java.io.BufferedReader;
@@ -60,7 +61,8 @@ public class MainActivity extends AppCompatActivity
 
         getLoaderManager().initLoader(RAMALAN_LOADER,null, this);
 
-        new AmbilCuacaRamalanTask().execute();
+        Intent bukaRamalanService = new Intent(this, SunshineService.class);
+        startService(bukaRamalanService);
     }
 
     @Override
@@ -100,93 +102,6 @@ public class MainActivity extends AppCompatActivity
         Intent intentBukaDetail = new Intent(MainActivity.this, DetailActivity.class);
         intentBukaDetail.putExtra(DetailActivity.EXTRA_DATE, date);
         this.startActivity(intentBukaDetail);
-    }
-
-
-    class AmbilCuacaRamalanTask extends AsyncTask<Void, Void, CuacaRamalan> {
-        public AmbilCuacaRamalanTask(){
-
-        }
-
-        @Override
-        protected CuacaRamalan doInBackground(Void... voids) {
-            HttpURLConnection conn= null;
-            try {
-                URL url = new URL(SunshineURL.getCuacaRamalan("Jakarta"));
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(5000);
-                conn.setConnectTimeout(5000);
-                conn.setRequestMethod("GET");
-                conn.connect();
-
-                int responseCode = conn.getResponseCode();
-                if (responseCode!= HttpURLConnection.HTTP_OK) {
-                    return null;
-                }
-                InputStream is = conn.getInputStream();
-                if (null == is) {
-                    return null;
-                }
-                StringBuilder hasilStringBuilder = new StringBuilder();
-
-                BufferedReader bReader =
-                        new BufferedReader(
-                            new InputStreamReader(is));
-
-                String strLine;
-                /** Reading the contents of the file , line by line */
-                while ((strLine = bReader.readLine()) != null) {
-                    hasilStringBuilder.append(strLine);
-                }
-                CuacaRamalan cuacaRamalan =
-                        GsonSingleton.getGson().fromJson(hasilStringBuilder.toString()
-                        , CuacaRamalan.class);
-                java.util.List<List> lists = cuacaRamalan.getList();
-                ContentValues[] contentValues = new ContentValues[lists.size()];
-                for (int i =0; i<lists.size(); i++) {
-                    int cityID= 1642911;
-                    List listObj = lists.get(i);
-                    int date = lists.get(i).getDt();
-                    ContentValues cv = new ContentValues();
-                    cv.put(CuacaDBHelper.CITY_ID, 1642911);
-                    cv.put(CuacaDBHelper.COLUMN_DT, date);
-                    cv.put(CuacaDBHelper.COLUMN_MINTEMP, listObj.getTemp().getMin());
-                    cv.put(CuacaDBHelper.COLUMN_MAXTEMP, listObj.getTemp().getMax());
-                    cv.put(CuacaDBHelper.COLUMN_PRESSURE, listObj.getPressure());
-                    cv.put(CuacaDBHelper.COLUMN_HUMIDITY, listObj.getHumidity());
-
-                    Weather weather = listObj.getWeather().get(0);
-                    cv.put(CuacaDBHelper.COLUMN_W_ID, weather.getId());
-                    cv.put(CuacaDBHelper.COLUMN_W_DESC, weather.getDescription());
-                    cv.put(CuacaDBHelper.COLUMN_W_ICON, weather.getIcon());
-                    cv.put(CuacaDBHelper.COLUMN_W_MAIN, weather.getMain());
-
-                    cv.put(CuacaDBHelper.COLUMN_WINDSPEED, listObj.getSpeed());
-                    cv.put(CuacaDBHelper.COLUMN_WINDDEGREE, listObj.getDeg());
-                    contentValues[i] = cv;
-                }
-                Uri uri = Uri.parse("content://com.sunshineapp/ramalan");
-                getContentResolver().delete(
-                        uri,
-                        null,
-                        null
-                );
-                getContentResolver().bulkInsert(
-                        uri,
-                        contentValues);
-                getContentResolver().notifyChange(uri, null);
-                return cuacaRamalan;
-            }
-            catch (Exception e) {
-                return null;
-            }
-            finally {
-                if (null!= conn){
-                    conn.disconnect();
-                }
-            }
-        }
-
     }
 
 
