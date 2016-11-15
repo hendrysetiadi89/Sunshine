@@ -8,13 +8,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.sunshineapp.R;
 import com.sunshineapp.adapter.CuacaRVAdapter;
@@ -22,7 +18,6 @@ import com.sunshineapp.data.CuacaDBHelper;
 import com.sunshineapp.model.SunshineURL;
 import com.sunshineapp.pojo.CuacaRamalan;
 import com.sunshineapp.pojo.List;
-import com.sunshineapp.pojo.Weather;
 import com.sunshineapp.singleton.GsonSingleton;
 
 import java.io.BufferedReader;
@@ -30,7 +25,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
 
