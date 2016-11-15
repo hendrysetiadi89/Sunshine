@@ -1,13 +1,11 @@
 package com.sunshineapp.activity;
 
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,18 +17,7 @@ import com.sunshineapp.R;
 import com.sunshineapp.adapter.CuacaRVAdapter;
 import com.sunshineapp.data.CuacaDBHelper;
 import com.sunshineapp.listener.OnCuacaClickListener;
-import com.sunshineapp.model.SunshineURL;
-import com.sunshineapp.pojo.CuacaRamalan;
-import com.sunshineapp.pojo.List;
-import com.sunshineapp.pojo.Weather;
 import com.sunshineapp.service.SunshineService;
-import com.sunshineapp.singleton.GsonSingleton;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> ,
