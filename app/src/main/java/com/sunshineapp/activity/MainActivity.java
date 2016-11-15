@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity
 
         getLoaderManager().initLoader(RAMALAN_LOADER,null, this);
 
-        new AmbilCuacaSekarangTask().execute();
+        new AmbilCuacaRamalanTask().execute();
     }
 
     @Override
@@ -94,8 +93,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    class AmbilCuacaSekarangTask extends AsyncTask<Void, Void, CuacaRamalan> {
-        public AmbilCuacaSekarangTask(){
+    class AmbilCuacaRamalanTask extends AsyncTask<Void, Void, CuacaRamalan> {
+        public AmbilCuacaRamalanTask(){
 
         }
 
