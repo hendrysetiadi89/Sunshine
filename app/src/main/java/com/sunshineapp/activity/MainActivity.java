@@ -18,6 +18,7 @@ import com.sunshineapp.data.CuacaDBHelper;
 import com.sunshineapp.model.SunshineURL;
 import com.sunshineapp.pojo.CuacaRamalan;
 import com.sunshineapp.pojo.List;
+import com.sunshineapp.pojo.Weather;
 import com.sunshineapp.singleton.GsonSingleton;
 
 import java.io.BufferedReader;
@@ -73,10 +74,20 @@ public class MainActivity extends AppCompatActivity {
                 ContentValues[] contentValues = new ContentValues[lists.size()];
                 for (int i =0; i<lists.size(); i++) {
                     int cityID= 1642911;
+                    List listObj = lists.get(i);
                     int date = lists.get(i).getDt();
                     ContentValues cv = new ContentValues();
                     cv.put(CuacaDBHelper.CITY_ID, 1642911);
                     cv.put(CuacaDBHelper.COLUMN_DT, date);
+                    cv.put(CuacaDBHelper.COLUMN_MINTEMP, listObj.getTemp().getMin());
+                    cv.put(CuacaDBHelper.COLUMN_MAXTEMP, listObj.getTemp().getMax());
+                    cv.put(CuacaDBHelper.COLUMN_PRESSURE, listObj.getPressure());
+                    cv.put(CuacaDBHelper.COLUMN_HUMIDITY, listObj.getHumidity());
+                    Weather weather = listObj.getWeather().get(0);
+                    cv.put(CuacaDBHelper.COLUMN_W_ID, weather.getId());
+                    cv.put(CuacaDBHelper.COLUMN_W_DESC, weather.getDescription());
+                    cv.put(CuacaDBHelper.COLUMN_W_ICON, weather.getIcon());
+                    cv.put(CuacaDBHelper.COLUMN_W_MAIN, weather.getMain());
                     contentValues[i] = cv;
                 }
                 Uri uri = Uri.parse("content://com.sunshineapp/ramalan");
