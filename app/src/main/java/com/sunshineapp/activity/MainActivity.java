@@ -3,6 +3,7 @@ package com.sunshineapp.activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import com.sunshineapp.R;
 import com.sunshineapp.adapter.CuacaRVAdapter;
 import com.sunshineapp.data.CuacaDBHelper;
+import com.sunshineapp.listener.OnCuacaClickListener;
 import com.sunshineapp.model.SunshineURL;
 import com.sunshineapp.pojo.CuacaRamalan;
 import com.sunshineapp.pojo.List;
@@ -30,7 +32,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor> ,
+                    OnCuacaClickListener{
 
     public static final int RAMALAN_LOADER = 100;
     RecyclerView mRecyclerView;
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity
                 LinearLayoutManager.VERTICAL,false);
 
         mRecyclerView.setLayoutManager(llm);
-        mCuacaAdapter = new CuacaRVAdapter(null);
+        mCuacaAdapter = new CuacaRVAdapter(null, this);
         mRecyclerView.setAdapter(mCuacaAdapter);
 
         getLoaderManager().initLoader(RAMALAN_LOADER,null, this);
@@ -90,6 +93,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mCuacaAdapter.updateList(null);
+    }
+
+    @Override
+    public void onCuacaClick(int date) {
+        Intent intentBukaDetail = new Intent(MainActivity.this, DetailActivity.class);
+        intentBukaDetail.putExtra(DetailActivity.EXTRA_DATE, date);
+        this.startActivity(intentBukaDetail);
     }
 
 
@@ -144,11 +154,15 @@ public class MainActivity extends AppCompatActivity
                     cv.put(CuacaDBHelper.COLUMN_MAXTEMP, listObj.getTemp().getMax());
                     cv.put(CuacaDBHelper.COLUMN_PRESSURE, listObj.getPressure());
                     cv.put(CuacaDBHelper.COLUMN_HUMIDITY, listObj.getHumidity());
+
                     Weather weather = listObj.getWeather().get(0);
                     cv.put(CuacaDBHelper.COLUMN_W_ID, weather.getId());
                     cv.put(CuacaDBHelper.COLUMN_W_DESC, weather.getDescription());
                     cv.put(CuacaDBHelper.COLUMN_W_ICON, weather.getIcon());
                     cv.put(CuacaDBHelper.COLUMN_W_MAIN, weather.getMain());
+
+                    cv.put(CuacaDBHelper.COLUMN_WINDSPEED, listObj.getSpeed());
+                    cv.put(CuacaDBHelper.COLUMN_WINDDEGREE, listObj.getDeg());
                     contentValues[i] = cv;
                 }
                 Uri uri = Uri.parse("content://com.sunshineapp/ramalan");

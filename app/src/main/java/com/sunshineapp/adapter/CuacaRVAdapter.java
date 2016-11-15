@@ -14,6 +14,7 @@ import android.widget.TextView;
 //import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.sunshineapp.R;
+import com.sunshineapp.listener.OnCuacaClickListener;
 import com.sunshineapp.pojo.List;
 
 import java.util.Calendar;
@@ -30,8 +31,10 @@ public class CuacaRVAdapter extends RecyclerView.Adapter<CuacaRVAdapter.ViewHold
     public static final int TYPE_ITEM = 1;
 
     Cursor cursor;
-    public CuacaRVAdapter (Cursor c){
+    OnCuacaClickListener listener;
+    public CuacaRVAdapter (Cursor c, OnCuacaClickListener listener){
         this.cursor = c;
+        this.listener = listener;
     }
     public void updateList(Cursor c){
         this.cursor = c;
@@ -91,7 +94,8 @@ public class CuacaRVAdapter extends RecyclerView.Adapter<CuacaRVAdapter.ViewHold
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener{
         TextView tvDate;
         TextView tvLow;
         TextView tvHigh;
@@ -105,6 +109,14 @@ public class CuacaRVAdapter extends RecyclerView.Adapter<CuacaRVAdapter.ViewHold
             tvLow = (TextView) itemView.findViewById(R.id.tv_low);
             tvHigh = (TextView) itemView.findViewById(R.id.tv_high);
             tvCuacaDesc = (TextView) itemView.findViewById(R.id.tv_icon_desc);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            cursor.moveToPosition(position);
+            listener.onCuacaClick((int)cursor.getLong(0));
         }
     }
 
