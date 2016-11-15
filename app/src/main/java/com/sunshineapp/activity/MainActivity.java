@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     class AmbilCuacaSekarangTask extends AsyncTask<Void, Void, CuacaRamalan> {
         public AmbilCuacaSekarangTask(){
-            // a
+
         }
 
         @Override
