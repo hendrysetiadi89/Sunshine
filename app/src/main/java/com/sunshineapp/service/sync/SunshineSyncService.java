@@ -8,6 +8,7 @@ import android.os.IBinder;
  * Created by hendrysetiadi on 15/11/2016.
  */
 public class SunshineSyncService extends Service {
+    private static final Object sSyncAdapterLock = new Object();
     private static SunshineSyncAdapter mSyncAdapter = null;
 
     public SunshineSyncService() {
@@ -17,8 +18,10 @@ public class SunshineSyncService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (mSyncAdapter == null) {
-            mSyncAdapter = new SunshineSyncAdapter(getApplicationContext(), true);
+        synchronized (sSyncAdapterLock) {
+            if (mSyncAdapter == null) {
+                mSyncAdapter = new SunshineSyncAdapter(getApplicationContext(), true);
+            }
         }
     }
 
