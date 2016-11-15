@@ -79,14 +79,16 @@ public class MainActivity extends AppCompatActivity {
                     cv.put(CuacaDBHelper.COLUMN_DT, date);
                     contentValues[i] = cv;
                 }
+                Uri uri = Uri.parse("content://com.sunshineapp/ramalan");
                 getContentResolver().delete(
-                        Uri.parse("content://com.sunshineapp/ramalan"),
+                        uri,
                         null,
                         null
                 );
                 getContentResolver().bulkInsert(
-                        Uri.parse ("content://com.sunshineapp/ramalan"),
+                        uri,
                         contentValues);
+                getContentResolver().notifyChange(uri, null);
                 return cuacaRamalan;
             }
             catch (Exception e) {
