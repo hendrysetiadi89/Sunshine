@@ -1,6 +1,7 @@
 package com.sunshineapp.adapter;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.text.format.Time;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 //import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.sunshineapp.R;
+import com.sunshineapp.listener.OnCuacaClickListener;
 import com.sunshineapp.pojo.List;
 
 import java.util.Calendar;
@@ -28,23 +30,14 @@ public class CuacaRVAdapter extends RecyclerView.Adapter<CuacaRVAdapter.ViewHold
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_ITEM = 1;
 
-    java.util.List<List> lists;
-    public CuacaRVAdapter (java.util.List<List> list){
-        this.lists = list;
+    Cursor cursor;
+    OnCuacaClickListener listener;
+    public CuacaRVAdapter (Cursor c, OnCuacaClickListener listener){
+        this.cursor = c;
+        this.listener = listener;
     }
-    public void updateList(java.util.List<List> list){
-        this.lists = list;
-
-        Time dayTime = new Time();
-        dayTime.setToNow();
-
-        // we start at the day returned by local time. Otherwise this is a mess.
-        // we start at the day returned by local time. Otherwise this is a mess.
-        int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
-
-        // now we work exclusively in UTC
-        dayTime = new Time();
-        dayTime.setJulianDay(julianStartDay);
+    public void updateList(Cursor c){
+        this.cursor = c;
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -64,29 +57,28 @@ public class CuacaRVAdapter extends RecyclerView.Adapter<CuacaRVAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         Context context = holder.ivCuaca.getContext();
 
-        List list = lists.get(position);
+        cursor.moveToPosition(position);
 
-        // 1479182400
-        Date date = new Date(Long.parseLong(list.getDt() +"000"));
+        Date date = new Date(Long.parseLong(cursor.getLong(0) +"000"));
         holder.tvDate.setText(date.toString());
         holder.tvLow.setText(String.format(
                 context.getString(R.string.xx_percent),
-                list.getTemp().getMin() ) );
+                cursor.getDouble(1) ) );
         holder.tvHigh.setText(String.format(
                 context.getString(R.string.xx_percent),
-                list.getTemp().getMax()));
-        holder.tvCuacaDesc.setText(list.getWeather().get(0).getDescription());
+                cursor.getDouble(2) ));
+        holder.tvCuacaDesc.setText(cursor.getString(3) );
         // https://openweathermap.org/weather-conditions
 
         // http://openweathermap.org/img/w/10d.png
         Picasso.with(context).load("http://openweathermap.org/img/w/" +
-            list.getWeather().get(0).getIcon() + ".png").into(holder.ivCuaca);
+                cursor.getString(4)  + ".png").into(holder.ivCuaca);
     }
 
     @Override
     public int getItemCount() {
-        if (null!= lists) {
-            return lists.size();
+        if (null!= cursor) {
+            return cursor.getCount();
         }
         return 0;
 //        return 10;
@@ -102,7 +94,8 @@ public class CuacaRVAdapter extends RecyclerView.Adapter<CuacaRVAdapter.ViewHold
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener{
         TextView tvDate;
         TextView tvLow;
         TextView tvHigh;
@@ -116,6 +109,14 @@ public class CuacaRVAdapter extends RecyclerView.Adapter<CuacaRVAdapter.ViewHold
             tvLow = (TextView) itemView.findViewById(R.id.tv_low);
             tvHigh = (TextView) itemView.findViewById(R.id.tv_high);
             tvCuacaDesc = (TextView) itemView.findViewById(R.id.tv_icon_desc);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            cursor.moveToPosition(position);
+            listener.onCuacaClick((int)cursor.getLong(0));
         }
     }
 
