@@ -25,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     CuacaRVAdapter mCuacaAdapter;
 
-    class AmbilCuacaSekarangTask extends AsyncTask<Void, Void, CuacaRamalan> {
-        public AmbilCuacaSekarangTask(){
+    class AmbilCuacaRamalanTask extends AsyncTask<Void, Void, CuacaRamalan> {
+        public AmbilCuacaRamalanTask(){
 
         }
 
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         mCuacaAdapter = new CuacaRVAdapter(null);
         mRecyclerView.setAdapter(mCuacaAdapter);
 
-        new AmbilCuacaSekarangTask().execute();
+        new AmbilCuacaRamalanTask().execute();
     }
 
 }
