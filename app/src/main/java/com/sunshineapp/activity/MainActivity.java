@@ -149,6 +149,9 @@ public class MainActivity extends AppCompatActivity
                     cv.put(CuacaDBHelper.COLUMN_W_DESC, weather.getDescription());
                     cv.put(CuacaDBHelper.COLUMN_W_ICON, weather.getIcon());
                     cv.put(CuacaDBHelper.COLUMN_W_MAIN, weather.getMain());
+
+                    cv.put(CuacaDBHelper.COLUMN_WINDSPEED, listObj.getSpeed());
+                    cv.put(CuacaDBHelper.COLUMN_WINDDEGREE, listObj.getDeg());
                     contentValues[i] = cv;
                 }
                 Uri uri = Uri.parse("content://com.sunshineapp/ramalan");
