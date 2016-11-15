@@ -17,7 +17,7 @@ import com.sunshineapp.R;
 import com.sunshineapp.adapter.CuacaRVAdapter;
 import com.sunshineapp.data.CuacaDBHelper;
 import com.sunshineapp.listener.OnCuacaClickListener;
-import com.sunshineapp.service.SunshineService;
+import com.sunshineapp.service.sync.SunshineSyncAdapter;
 
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> ,
@@ -48,8 +48,10 @@ public class MainActivity extends AppCompatActivity
 
         getLoaderManager().initLoader(RAMALAN_LOADER,null, this);
 
-        Intent bukaRamalanService = new Intent(this, SunshineService.class);
-        startService(bukaRamalanService);
+        SunshineSyncAdapter.memulaiSync(this);
+
+//        Intent bukaRamalanService = new Intent(this, SunshineService.class);
+//        startService(bukaRamalanService);
     }
 
     @Override
