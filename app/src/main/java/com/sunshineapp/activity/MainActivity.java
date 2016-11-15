@@ -69,24 +69,10 @@ public class MainActivity extends AppCompatActivity {
                 CuacaRamalan cuacaRamalan =
                         GsonSingleton.getGson().fromJson(hasilStringBuilder.toString()
                         , CuacaRamalan.class);
-                java.util.List<List> lists = cuacaRamalan.getList();
-                ContentValues[] contentValues = new ContentValues[lists.size()];
-                for (int i =0; i<lists.size(); i++) {
-                    int cityID= 1642911;
-                    int date = lists.get(i).getDt();
-                    ContentValues cv = new ContentValues();
-                    cv.put(CuacaDBHelper.CITY_ID, 1642911);
-                    cv.put(CuacaDBHelper.COLUMN_DT, date);
-                    contentValues[i] = cv;
-                }
-                getContentResolver().delete(
-                        Uri.parse("content://com.sunshineapp/ramalan"),
-                        null,
-                        null
-                );
-                getContentResolver().bulkInsert(
-                        Uri.parse ("content://com.sunshineapp/ramalan"),
-                        contentValues);
+
+                // use content provider
+                // insert the objects to database here
+
                 return cuacaRamalan;
             }
             catch (Exception e) {
@@ -129,6 +115,18 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mCuacaAdapter);
 
         new AmbilCuacaSekarangTask().execute();
+
+        // TODO Remove, for test
+        CuacaDBHelper cuacaDBHelper = new CuacaDBHelper(MainActivity.this);
+        SQLiteDatabase db = cuacaDBHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CuacaDBHelper.CITY_ID, 1642911);
+        cv.put(CuacaDBHelper.COLUMN_DT, 1479182400);
+        cv.put(CuacaDBHelper.COLUMN_MINTEMP, 28.29);
+        db.insert(CuacaDBHelper.TABLE_RAMALAN,
+                null,
+                cv);
+        cuacaDBHelper.close();
     }
 
 }
