@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import com.sunshineapp.R;
-import com.sunshineapp.adapter.CuacaRVAdapter;
 import com.sunshineapp.model.SunshineURL;
 import com.sunshineapp.pojo.CuacaRamalan;
 import com.sunshineapp.singleton.GsonSingleton;
@@ -21,9 +20,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-
-    RecyclerView mRecyclerView;
-    CuacaRVAdapter mCuacaAdapter;
 
     class AmbilCuacaRamalanTask extends AsyncTask<Void, Void, CuacaRamalan> {
         public AmbilCuacaRamalanTask(){
@@ -78,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(CuacaRamalan c) {
             super.onPostExecute(c);
-            // mCuacaAdapter = new CuacaRVAdapter(c.getList());
-            mCuacaAdapter.updateList(c.getList());
-            mCuacaAdapter.notifyDataSetChanged();
 //            Toast.makeText(MainActivity.this,s, Toast.LENGTH_LONG).show();
         }
     }
@@ -95,14 +88,6 @@ public class MainActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        LinearLayoutManager llm = new LinearLayoutManager(MainActivity.this,
-                LinearLayoutManager.VERTICAL,false);
-
-        mRecyclerView.setLayoutManager(llm);
-        mCuacaAdapter = new CuacaRVAdapter(null);
-        mRecyclerView.setAdapter(mCuacaAdapter);
 
         new AmbilCuacaRamalanTask().execute();
     }
