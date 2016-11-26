@@ -95,7 +95,7 @@ public class DetailActivity extends AppCompatActivity
         if (cursor == null) return;
 
         //cursor is always 1
-        cursor.moveToNext();
+        cursor.moveToPosition(0);
 
         Date date = new Date(Long.parseLong(cursor.getLong(0) +"000"));
         tvDate.setText(date.toString());
