@@ -37,6 +37,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />
         </activity>
+
+        <service android:name=".service.auth.SunshineAuthService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
     </application>
 
 </manifest>
